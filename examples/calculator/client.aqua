@@ -1,0 +1,9 @@
+# 計算機用戶端（所有平台，網頁亦可）。 / Calculator client (every target, the web included).
+var rpc = import("AquaJSONRPC");
+var host = "127.0.0.1:8095";
+var http = rpc.HttpClient("http://" + host + "/rpc", null);
+print("2 + 3 =", await http.Call("add", [2, 3]));
+print("10 / 0 ->", (await http.Call("divide", [10, 0]).Catch(function(error) { return error; }))["message"]);
+var ws = await rpc.ConnectWebSocketAsync("ws://" + host + "/ws", null);
+print("batch", await ws.Batch([["add", [1, 1]], ["divide", [9, 3]]]));
+ws.Close();

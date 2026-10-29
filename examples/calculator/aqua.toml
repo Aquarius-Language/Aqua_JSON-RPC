@@ -1,0 +1,12 @@
+manifest_version = 1
+
+[project]
+name = "Aqua_JSON-RPC_Calculator"
+type = "executable"
+version = "1.0.0"
+entry = "server.aqua"
+sources = ["server.aqua", "client.aqua"]
+platforms = ["windows", "linux", "web", "android"]
+
+[dependencies]
+Aqua_JSON-RPC = { path = "../..", version = "1.0.0" }

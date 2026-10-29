@@ -1,0 +1,18 @@
+# 計算機服務（桌面、Android）：同一個連接埠提供 HTTP 與 WebSocket 的 JSON-RPC。
+# Calculator service (desktop, Android): JSON-RPC over HTTP and WebSocket on one port.
+var rpc = import("AquaJSONRPC");
+var net = import("Network");
+var server = net.Listen(":8095");
+server.CORS(["*"]);
+var calculator = function(endpoint) {
+    endpoint.Handle("add", function(params) { return params[0] + params[1]; });
+    endpoint.Handle("divide", function(params) {
+        if (params[1] == 0) { return rpc.Error(-32010, "division by zero / 除以零", null); }
+        return params[0] / params[1];
+    });
+    return endpoint;
+};
+rpc.ServeHttp(server, "/rpc", calculator(rpc.CreateEndpoint(null)));
+rpc.ServeWebSocket(server, "/ws", function(endpoint, request) { calculator(endpoint); });
+print("calculator on http://127.0.0.1:8095/rpc and ws://127.0.0.1:8095/ws");
+server.Serve();
